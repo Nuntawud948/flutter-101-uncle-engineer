@@ -10,77 +10,151 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter 101 - Uncle Engineer',
+      title: 'Flutter 101 - Layout Basics',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: const FirstScreen(),
+      home: const LayoutScreen(),
     );
   }
 }
 
-class FirstScreen extends StatelessWidget {
-  const FirstScreen({super.key});
+class LayoutScreen extends StatelessWidget {
+  const LayoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 1. แถบหัวแอปพลิเคชันด้านบน
       appBar: AppBar(
-        title: const Text(
-          'Flutter 101: Scaffold & Widgets',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.deepPurple,
+        title: const Text('บทที่ 3: Column, Row & Container'),
+        backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              debugPrint('กดปุ่มแจ้งเตือน!');
-            },
-          ),
-        ],
       ),
-
-      // 2. เนื้อหาหลักของหน้าจอ จัดให้อยู่กึ่งกลางด้วย Center
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(
-              Icons.flutter_dash,
-              size: 80,
-              color: Colors.deepPurple,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'ยินดีต้อนรับสู่แอปแรกของคุณ!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+            // 1. Container: การกำหนดกล่อง, ตกแต่งสี ขอบมน และเงา
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.teal.shade200, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Column(
+                children: [
+                  Icon(Icons.layers, size: 48, color: Colors.teal),
+                  SizedBox(height: 8),
+                  Text(
+                    'Container & Decoration',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'กล่องสารพัดประโยชน์ กำหนด Padding, Margin, สี และขอบมนได้',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 24),
+
+            // 2. Row: การจัดเรียงในแนวนอน (Horizontal Layout)
             const Text(
-              'สร้างด้วย Scaffold, AppBar และ Center Widget',
-              style: TextStyle(fontSize: 14, color: Colors.black54),
+              'Row Layout (จัดเรียงแนวนอน):',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildFeatureCard(
+                  icon: Icons.code,
+                  title: 'Dart',
+                  color: Colors.blue,
+                ),
+                _buildFeatureCard(
+                  icon: Icons.phone_android,
+                  title: 'Flutter',
+                  color: Colors.teal,
+                ),
+                _buildFeatureCard(
+                  icon: Icons.cloud_upload,
+                  title: 'GitHub',
+                  color: Colors.deepPurple,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+
+            // 3. Info Banner แนวนอนโดยใช้ Row ผสม Icon + Expanded Text
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.amber.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.lightbulb, color: Colors.amber, size: 28),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'ทริค: ใช้ Expanded ครอบ Widget เมื่อต้องการให้ขยายเต็มพื้นที่ที่เหลือใน Row!',
+                      style: TextStyle(fontSize: 13, color: Colors.brown),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
 
-      // 3. ปุ่มลอยมุมขวาล่าง (Floating Action Button)
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          debugPrint('กดปุ่ม Floating Action Button!');
-        },
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: Colors.white),
+  /// Helper Widget สำหรับสร้างการ์ดไอคอนใน Row
+  static Widget _buildFeatureCard({
+    required IconData icon,
+    required String title,
+    required Color color,
+  }) {
+    return Container(
+      width: 95,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 36, color: color),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
       ),
     );
   }
